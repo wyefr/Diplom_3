@@ -1,18 +1,9 @@
 package test;
 
-import helpers.api.user.UserMethods;
-import io.github.bonigarcia.wdm.WebDriverManager;
-import org.junit.After;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.firefox.FirefoxOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import pages.LoginPage;
@@ -25,20 +16,7 @@ import static helpers.Urls.LOGIN_PAGE;
 import static helpers.Urls.REGISTRATION_PAGE;
 
 @RunWith(Parameterized.class)
-public class RegistrationTest {
-    WebDriver driver;
-    private final String name;
-    private final String email;
-    private final String password;
-    private String accessToken;
-
-    @Before
-    public void setup() {
-        ChromeOptions options = new ChromeOptions();
-        options.addArguments("--no-sandbox", "--headed", "--disable-dev-shm-usage");
-        driver = new ChromeDriver();
-    }
-
+public class RegistrationTest extends Base {
     @Parameterized.Parameters
     public static Collection<Object[]> data() {
         return Arrays.asList(new Object[][] {
@@ -64,18 +42,10 @@ public class RegistrationTest {
                     .until(ExpectedConditions.elementToBeClickable(LoginPage.getLoginButtonLocator()));
             String currentUrl = driver.getCurrentUrl();
             Assert.assertEquals("Actual Url doesn't match expected", LOGIN_PAGE, currentUrl);
-            accessToken = UserMethods.loginUser(email, password).then().extract().path("accessToken").toString();
+            loginUser();
         } else {
             String incorrectPasswordText = registrationPage.getIncorrectPassword();
-            Assert.assertTrue("Incorrect password message is not displayed", !incorrectPasswordText.isEmpty());
+            Assert.assertFalse("Incorrect password message is not displayed", incorrectPasswordText.isEmpty());
         }
-    }
-
-    @After
-    public void cleanUp() {
-        if (accessToken != null) {
-            UserMethods.deleteUser(accessToken);
-        }
-        driver.quit();
     }
 }
