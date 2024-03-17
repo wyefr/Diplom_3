@@ -15,6 +15,7 @@ public class MainPage {
     private static final By fillingConstructor = By.xpath(".//*[@id=\"root\"]/div/main/section[1]/div[2]/h2[3]");
     private static final By sousesConstructor = By.xpath(".//*[@id=\"root\"]/div/main/section[1]/div[2]/h2[2]");
     private static final By bunsConstructor = By.xpath(".//*[@id=\"root\"]/div/main/section[1]/div[1]/div[1]/span");
+    private static final By selectedSection = By.xpath(".//*[@class='tab_tab__1SPyG tab_tab_type_current__2BEPc pt-4 pr-10 pb-4 pl-10 noselect']");
 
     public MainPage(WebDriver driver) {
         this.driver = driver;
@@ -75,4 +76,14 @@ public class MainPage {
         return bunsConstructor;
     }
 
+    @Step("Get selected section")
+    public static By getSelectedSectionLocator() {
+        // Задержка перед получением выбранного раздела
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        return selectedSection;
+    }
 }

@@ -6,7 +6,6 @@ import org.junit.Test;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import pages.LoginPage;
 import pages.MainPage;
 import java.time.Duration;
 
@@ -16,20 +15,8 @@ public class ConstructorTest extends Base {
     @Test
     @DisplayName("Переход к разделу Начинки")
     public void transferToFillingConstructor() {
-        //Создадим пользователя
-        createUser();
-
-        //идем на главную страницу и оттуда в личный кабинет, чтобы залогиниться
-        driver.get(BASE_URL);
-        driver.findElement(MainPage.getLogIntoAccountButtonLocator()).click();
-
-        //Логинимся
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.urlContains(BASE_URL));
-
         //Пробросились на главную страницу, теперь перейдем к разделу Начинки
+        driver.get(BASE_URL);
         MainPage mainPage = new MainPage(driver);
         By modalWindowLocatorBeforeClick = MainPage.getModalWindowLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
@@ -37,68 +24,72 @@ public class ConstructorTest extends Base {
 
         //Переходим к разделу Начинки
         mainPage.clickFillingConstructorButton();
-        By getFillingConstructorLocator = MainPage.getFillingConstructorLocator();
+
+        // Ожидаем, пока локатор раздела "Соусы" сменится, прежде чем проверять раздел "Начинки"
+        By sousesConstructorLocator = MainPage.getSousesConstructorLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(getFillingConstructorLocator));
-        Assert.assertEquals("Buns constructor hasn't been located", "Начинки", driver.findElement(getFillingConstructorLocator).getText());
+                .until(ExpectedConditions.visibilityOfElementLocated(sousesConstructorLocator));
+
+        //Проверяем, что после клика на кнопку "Начинки", выбранный раздел приобрел новый локатор
+        By selectedSectionLocator = MainPage.getSelectedSectionLocator();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(selectedSectionLocator));
+
+        Assert.assertEquals("Filling section hasn't been selected", "Начинки", driver.findElement(selectedSectionLocator).getText());
     }
 
     @Test
     @DisplayName("Переход к разделу Соусы")
     public void transferToSousesConstructor() {
-        //Создадим пользователя
-        createUser();
-
-        //идем на главную страницу и оттуда в личный кабинет, чтобы залогиниться
-        driver.get(BASE_URL);
-        driver.findElement(MainPage.getLogIntoAccountButtonLocator()).click();
-
-        //Логинимся
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.urlContains(BASE_URL));
-
         //Пробросились на главную страницу, теперь перейдем к разделу Соусы
+        driver.get(BASE_URL);
         MainPage mainPage = new MainPage(driver);
         By modalWindowLocatorBeforeClick = MainPage.getModalWindowLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.invisibilityOfElementLocated(modalWindowLocatorBeforeClick));
 
+        //Переходим к разделу Соусы
         mainPage.clickSousesConstructorButton();
-        By getSousesConstructorLocator = MainPage.getSousesConstructorLocator();
+
+        // Ожидаем, пока локатор раздела "Булки" сменится, прежде чем проверять раздел "Соусы"
+        By bunsConstructorLocator = MainPage.getBunsConstructorLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(getSousesConstructorLocator));
-        Assert.assertEquals("Buns constructor hasn't been located", "Соусы", driver.findElement(getSousesConstructorLocator).getText());
+                .until(ExpectedConditions.visibilityOfElementLocated(bunsConstructorLocator));
+
+        //Проверяем, что после клика на кнопку "Соусы", выбранный раздел приобрел новый локатор
+        By selectedSectionLocator = MainPage.getSelectedSectionLocator();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(selectedSectionLocator));
+
+        Assert.assertEquals("Souses constructor hasn't been located", "Соусы", driver.findElement(selectedSectionLocator).getText());
     }
 
     @Test
     @DisplayName("Переход к разделу Булки")
     public void transferToBunsConstructor() {
-        //Создадим пользователя
-        createUser();
-
-        //идем на главную страницу и оттуда в личный кабинет, чтобы залогиниться
-        driver.get(BASE_URL);
-        driver.findElement(MainPage.getLogIntoAccountButtonLocator()).click();
-
-        //Логинимся
-        LoginPage loginPage = new LoginPage(driver);
-        loginPage.login(email, password);
-        new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.urlContains(BASE_URL));
-
         //Пробросились на главную страницу, теперь перейдем к разделу Булки
+        driver.get(BASE_URL);
         MainPage mainPage = new MainPage(driver);
         By modalWindowLocatorBeforeClick = MainPage.getModalWindowLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
                 .until(ExpectedConditions.invisibilityOfElementLocated(modalWindowLocatorBeforeClick));
 
-        mainPage.clickFillingConstructorButton();
+       //Сначала перейдем к разделу Соусы, чтобы потом перейти в раздел Булки, чтобы проверить работу переходов между разделами
+        mainPage.clickSousesConstructorButton();
+
+        //Переходим к разделу Булки
         mainPage.clickBunsConstructorButton();
-        By getBunsConstructorLocator = MainPage.getBunsConstructorLocator();
+
+        // Ожидаем, пока локатор раздела "Соусы" сменится, прежде чем проверять раздел "Булки"
+        By getSousesConstructorLocator = MainPage.getSousesConstructorLocator();
         new WebDriverWait(driver, Duration.ofSeconds(10))
-                .until(ExpectedConditions.visibilityOfElementLocated(getBunsConstructorLocator));
-        Assert.assertEquals("Buns constructor hasn't been located", "Булки", driver.findElement(getBunsConstructorLocator).getText());
+                .until(ExpectedConditions.visibilityOfElementLocated(getSousesConstructorLocator));
+
+        //Проверяем, что после клика на кнопку "Булки", выбранный раздел приобрел новый локатор
+        By selectedSectionLocator = MainPage.getSelectedSectionLocator();
+        new WebDriverWait(driver, Duration.ofSeconds(10))
+                .until(ExpectedConditions.visibilityOfElementLocated(selectedSectionLocator));
+
+        Assert.assertEquals("Buns constructor hasn't been located", "Булки", driver.findElement(selectedSectionLocator).getText());
     }
 }

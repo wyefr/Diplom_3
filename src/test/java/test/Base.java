@@ -16,6 +16,7 @@ public class Base {
     String name = "Иннокентий";
     String email = "test" + new Random().nextInt(100000) + "@yandex.ru";
     String password = "password";
+    String invalidPassword = "pa1";
     private String accessToken;
     private static final String YANDEX_DRIVER = "src/main/resources/yandexdriver";
 
